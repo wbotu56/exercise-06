@@ -3,6 +3,7 @@ extends: default
 
 ignore:
   - roles/vendor/
+  - .venv
 
 rules:
   line-length:
