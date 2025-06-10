@@ -1,0 +1,6 @@
+---
+- name: Install prerequisite packages and create deployer user
+  hosts: app
+  become: true
+  roles:
+    - prepare-role

@@ -1,0 +1,16 @@
+---
+all:
+  hosts:
+    exercise.internal:
+      ansible_host: 192.168.0.101
+      ansible_user: vagrant
+  children:
+    postgresql:
+      hosts:
+        exercise.internal
+    app:
+      hosts:
+        exercise.internal
+    nginx:
+      hosts:
+        exercise.internal

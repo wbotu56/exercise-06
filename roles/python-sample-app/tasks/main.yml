@@ -1,0 +1,68 @@
+---
+- name: Create app directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ app_root_path }}"
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: "u=rwx,g=rx,o=rx"
+  register: appdir_created
+
+- name: Clone app from github
+  ansible.builtin.git:
+    clone: yes
+    dest: "{{ app_root_path }}"
+    repo: 'https://github.com/mbaran0v/python-sample-app'
+    version: master
+  become: true
+  become_user: "{{ deployer_user }}"
+
+- name: Create venv appvenv and install pip_packages
+  ansible.builtin.pip:
+    virtualenv: "{{ app_venv_path }}"
+    name: "{{ pip_packages }}"
+    virtualenv_command: python{{ python_version }} -m venv
+  become: true
+  become_user: "{{ deployer_user }}"
+  register: appvenv_created
+
+- name: Venv install requirements.txt
+  ansible.builtin.pip:
+    requirements: "{{ app_root_path }}/requirements.txt"
+    virtualenv: "{{ app_venv_path }}"
+    state: present
+  become: true
+  become_user: "{{ deployer_user }}"
+  when: appvenv_created.changed
+
+- name: Flask DB upgrade
+  ansible.builtin.command:
+    cmd: "{{ app_venv_path }}/bin/flask db upgrade"
+    chdir: "{{ app_root_path }}"
+  environment: "{{ flask_vars }}"
+  become: true
+  become_user: "{{ deployer_user }}"
+  no_log: true
+  changed_when: false
+
+- name: Copy systemd unit
+  ansible.builtin.template:
+    src: gunicorn-unit.service.j2
+    dest: /etc/systemd/system/gunicorn-venv.service
+    mode: 'u=rw,g=r,o=r'
+  register: unit_created
+
+- name: Copy app.env
+  ansible.builtin.template:
+    src: app.env.j2
+    dest: "/home/{{ deployer_user }}/app.env"
+    owner: "{{ deployer_user }}"
+    group: "{{ deployer_group }}"
+    mode: 'u=r,g-rwx,o-rwx'
+
+- name: Start and enable gunicorn-venv.service
+  ansible.builtin.systemd:
+    name: gunicorn-venv.service
+    state: started
+    enabled: yes
+    daemon_reload: true

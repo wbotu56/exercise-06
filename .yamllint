@@ -1,0 +1,28 @@
+---
+extends: default
+
+ignore:
+  - roles/vendor/
+
+rules:
+  line-length:
+    max: 180
+    level: warning
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    level: warning
+  braces:
+    max-spaces-inside: 1
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: false
+  octal-values:
+    forbid-explicit-octal: true
+    forbid-implicit-octal: true
+  truthy:
+    allowed-values:
+      - 'true'
+      - 'false'
+      - 'yes'
+      - 'no'

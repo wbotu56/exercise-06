@@ -1,0 +1,12 @@
+---
+python_version: "3.12"
+
+app_packages:
+  - build-essential
+  - libpq-dev
+  - python{{ python_version }}
+  - python{{ python_version }}-venv
+  - python{{ python_version }}-dev
+
+deployer_user: "dummy"
+deployer_group: "dummy"

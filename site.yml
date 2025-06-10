@@ -1,0 +1,13 @@
+---
+- import_playbook: playbooks/postgresql.yml
+  tags:
+    - postgresql
+- import_playbook: playbooks/prepare-role.yml
+  tags:
+    - prepare-role
+- import_playbook: playbooks/app.yml
+  tags:
+    - app
+- import_playbook: playbooks/nginx.yml
+  tags:
+    - nginx

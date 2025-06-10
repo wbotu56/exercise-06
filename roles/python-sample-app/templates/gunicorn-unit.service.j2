@@ -1,0 +1,15 @@
+[Unit]
+Description=Flask Web Application Server using Gunicorn
+After=network.target
+
+[Service]
+User={{ deployer_user }}
+Group={{ deployer_user }}
+EnvironmentFile=/home/{{ deployer_user }}/app.env
+WorkingDirectory={{ app_root_path }}
+Environment="PATH={{ app_venv_path }}/bin"
+ExecStart={{ app_venv_path }}/bin/gunicorn -w 3 --bind 0.0.0.0:{{ app_port }} app:api
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

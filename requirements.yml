@@ -1,0 +1,10 @@
+---
+- src: https://github.com/ANXS/postgresql
+  version: master
+  name: anxs.postgresql
+  path: roles/vendor
+
+- src: https://github.com/jdauphant/ansible-role-nginx
+  version: master
+  name: jdauphant.nginx
+  path: roles/vendor

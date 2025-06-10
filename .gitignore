@@ -1,0 +1,6 @@
+.vscode
+.vagrant
+roles/vendor
+# Vim swap files
+*.swp
+*.swo

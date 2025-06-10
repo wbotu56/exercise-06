@@ -1,0 +1,6 @@
+---
+- name: Python-sample-app
+  hosts: app
+  become: true
+  roles:
+    - python-sample-app

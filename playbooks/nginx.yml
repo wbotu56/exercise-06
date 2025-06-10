@@ -1,0 +1,6 @@
+---
+- name: Nginx
+  hosts: nginx
+  become: true
+  roles:
+    - jdauphant.nginx

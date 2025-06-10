@@ -1,0 +1,36 @@
+---
+- name: Make API request to Launchpad
+  ansible.builtin.uri:
+    url: "https://api.launchpad.net/devel/~deadsnakes/+archive/ubuntu/ppa"
+    return_content: yes
+    method: GET
+    headers:
+      Accept: "application/json"
+  register: launchpad_response
+
+- name: Parse JSON to extract signing key fingerprint
+  ansible.builtin.set_fact:
+    signing_key_fingerprint: "{{ launchpad_response.json.signing_key_fingerprint }}"
+
+- name: Add ppa:deadsnakes repository
+  ansible.builtin.deb822_repository:
+    name: deadsnakes-ubuntu-ppa-jammy
+    types: [deb]
+    uris: "https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu/"
+    suites: "{{ ansible_distribution_release }}"
+    components:
+      - main
+    signed_by: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ signing_key_fingerprint }}"
+    state: present
+    enabled: true
+
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ app_packages }}"
+    state: present
+    update_cache: true
+
+- name: Create user "{{ deployer_user }}"
+  ansible.builtin.user:
+    name: "{{ deployer_user }}"
+    state: present

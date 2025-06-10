@@ -1,0 +1,16 @@
+---
+# defaults file for python-sample-app
+
+db_address: "localhost"
+db_name: "testdb"
+db_user: "testdbuser"
+db_password: "testdbpassword"
+
+deployer_user: "dummy"
+deployer_group: "dummy"
+
+app_root_path: "/var/www/app/"
+app_venv_path: "/home/{{ deployer_user }}/appvenv"
+
+pip_packages:
+  - gunicorn

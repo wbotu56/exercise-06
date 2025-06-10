@@ -1,0 +1,7 @@
+---
+skip_list:
+  - no-handler
+  - role-name
+  - name[play]
+exclude_paths:
+  - roles/vendor

@@ -1,0 +1,6 @@
+---
+postgresql_url: "postgresql://{{ db_user }}:{{ db_password }}@{{ db_address }}/{{ db_name }}"
+flask_vars:
+  POSTGRESQL_URL: "{{ postgresql_url }}"
+app_port: 5000
+python_version: "3.8"

@@ -1,0 +1,123 @@
+---
+postgresql_apt_dependencies:
+  - "python3-psycopg2"
+  - "locales"
+  - "acl"
+postgresql_version: 12
+postgresql_encoding: "UTF-8"
+postgresql_locale: "en_US.UTF-8"
+postgresql_ctype: "en_US.UTF-8"
+
+postgresql_admin_user: "postgres"
+postgresql_default_auth_method: "peer"
+postgresql_hide_passwords: true
+
+postgresql_cluster_name: main
+postgresql_cluster_reset: false
+
+postgresql_databases:
+  - name: "{{ db_name }}"
+    state: "present"
+
+postgresql_users:
+  - name: "{{ db_user }}"
+    pass: "{{ db_password }}"
+    encrypted: yes
+    state: "present"
+
+postgresql_user_privileges:
+  - name: "{{ db_user }}"
+    db: "{{ db_name }}"
+    priv: "ALL"
+
+postgresql_listen_addresses:
+  - "0.0.0.0"
+postgresql_port: 5432
+
+postgresql_pg_hba_default: []
+
+postgresql_pg_hba_custom:
+  - # comment: "Allow {{ postgresql_default_auth_method }} {{ postgresql_admin_user }} access"
+    type: local
+    database: all
+    user: "{{ postgresql_admin_user }}"
+    address: ""
+    method: "{{ postgresql_default_auth_method }}"
+
+  - # comment: "Allow ipv4 localhost {{ postgresql_admin_user }} access"
+    type: host
+    database: all
+    user: "{{ postgresql_admin_user }}"
+    address: "127.0.0.1/32"
+    method: "md5"
+
+  - # comment: "Allow ipv6 localhost {{ postgresql_admin_user }} access"
+    type: host
+    database: all
+    user: "{{ postgresql_admin_user }}"
+    address: "::1/128"
+    method: "md5"
+
+  - # comment: "Reject ipv4 {{ postgresql_admin_user }} access"
+    type: host
+    database: all
+    user: "{{ postgresql_admin_user }}"
+    address: "0.0.0.0/0"
+    method: "reject"
+
+  - # comment: "Reject ipv6 {{ postgresql_admin_user }} access"
+    type: host
+    database: all
+    user: "{{ postgresql_admin_user }}"
+    address: "::/0"
+    method: "reject"
+
+  - # comment: "Allow all other users access over ipv4 to all databases"
+    type: host
+    database: all
+    user: all
+    address: "0.0.0.0/0"
+    method: "md5"
+
+  - # comment: "Allow all other users access over ipv6 to all databases"
+    type: host
+    database: all
+    user: all
+    address: "::/0"
+    method: "md5"
+
+  - # comment: "Allow all other users access using socket to all databases"
+    type: local
+    database: all
+    user: all
+    address: ""
+    method: "md5"
+
+
+# https://pgtune.librasoft.by/ settings
+# DB Version: 12
+# OS Type: linux
+# DB Type: web
+# Total Memory (RAM): 1 GB
+# CPUs num: 2
+# Data Storage: hdd
+
+postgresql_max_connections: 200
+postgresql_shared_buffers: 256MB
+postgresql_effective_cache_size: 768MB
+postgresql_maintenance_work_mem: 64MB
+postgresql_checkpoint_completion_target: 0.9
+postgresql_wal_buffers: 7864kB
+postgresql_default_statistics_target: 100
+postgresql_random_page_cost: 4
+postgresql_effective_io_concurrency: 2
+postgresql_work_mem: 655kB
+postgresql_huge_pages: "off"
+postgresql_min_wal_size: 1GB
+postgresql_max_wal_size: 4GB
+
+# or you can enable this
+# postgresql_pgtune: yes
+# postgresql_pgtune_memory: no
+# postgresql_pgtune_type: "Web"
+# postgresql_pgtune_connections: no
